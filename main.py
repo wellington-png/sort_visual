@@ -10,7 +10,6 @@ st.set_page_config(page_title="Sort Visual", page_icon=":bar_chart:",
 def random_list():
     size_list = random.randint(1, 20)
     t = random.sample(range(1, 100), size_list)
-    print(len(t))
     if len(t) <= 5:
        return random_list()
     save_list(t)
@@ -70,12 +69,15 @@ try:
         load_list()), disabled=(insecao == 'Aleatório'))
     reverse = st.sidebar.radio("Ordem", ("Crescente", "Decrescente"))
     selection = st.sidebar.selectbox("Selecione o algoritmo", (
-        "Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort", "Quick Sort"))
-
+        "Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort"))
+    slide_speed = st.sidebar.slider("Velocidade", 0.1, 3.0, 1.0, 0.1)
     def manual_list(lista):
         t = [int(i) for i in input_list.split(",")]
         save_list(t)
         return t
+    
+    st.title("Sort Visual")
+    st.subheader("Algoritmos de ordenação selecionado : " + selection)
 
     if insecao == "Aleatório":
         lista = random_list()
@@ -106,13 +108,13 @@ def bubble_sort():
                 if lista[j] > lista[j+1]:
                     lista[j], lista[j+1] = lista[j+1], lista[j]
                     grafico = st.bar_chart(lista)
-                    time.sleep(1)
+                    time.sleep(slide_speed)
                     grafico.empty()
             else:
                 if lista[j] < lista[j+1]:
                     lista[j], lista[j+1] = lista[j+1], lista[j]
                     grafico = st.bar_chart(lista)
-                    time.sleep(1)
+                    time.sleep(slide_speed)
                     grafico.empty()
     save_list(lista)
 
@@ -121,12 +123,17 @@ def insertion_sort():
     for i in range(1, len(lista)):
         key = lista[i]
         j = i - 1
-        while j >= 0 and key < lista[j]:
-            lista[j + 1] = lista[j]
-            j -= 1
+        if is_crescente:
+            while j >= 0 and key < lista[j]:
+                lista[j + 1] = lista[j]
+                j -= 1
+        else:
+            while j >= 0 and key > lista[j]:
+                lista[j + 1] = lista[j]
+                j -= 1
         lista[j + 1] = key
         grafico = st.bar_chart(lista)
-        time.sleep(1)
+        time.sleep(slide_speed)
         grafico.empty()
     save_list(lista)
 
@@ -135,11 +142,15 @@ def selection_sort():
     for i in range(len(lista)):
         min_idx = i
         for j in range(i+1, len(lista)):
-            if lista[min_idx] > lista[j]:
-                min_idx = j
+            if is_crescente:
+                if lista[min_idx] > lista[j]:
+                    min_idx = j
+            else:
+                if lista[min_idx] < lista[j]:
+                    min_idx = j
         lista[i], lista[min_idx] = lista[min_idx], lista[i]
         grafico = st.bar_chart(lista)
-        time.sleep(1)
+        time.sleep(slide_speed)
         grafico.empty()
     save_list(lista)
 
@@ -261,7 +272,7 @@ def sort_list():
                     merge_crescente(arr, l, m, r)
 
                 grafico = st.bar_chart(arr)
-                time.sleep(1)
+                time.sleep(slide_speed)
                 grafico.empty()
                 save_list(arr)
 
