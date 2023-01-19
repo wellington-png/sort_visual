@@ -6,12 +6,19 @@ st.set_page_config(page_title="Sort Visual", page_icon=":bar_chart:",
                    layout="wide", initial_sidebar_state="expanded")
 
 
+def list_to_dict(lista):
+    list_dict = []
+    for i in range(len(lista)):
+        list_dict.append({lista[i]: lista[i]})
+    return list_dict
+
+
 @st.experimental_memo()
 def random_list():
     size_list = random.randint(1, 20)
     t = random.sample(range(1, 100), size_list)
     if len(t) <= 5:
-       return random_list()
+        return random_list()
     save_list(t)
 
 
@@ -69,13 +76,14 @@ try:
         load_list()), disabled=(insecao == 'Aleatório'))
     reverse = st.sidebar.radio("Ordem", ("Crescente", "Decrescente"))
     selection = st.sidebar.selectbox("Selecione o algoritmo", (
-        "Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort"))
+        "Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort", "Merge Sort 2"))
     slide_speed = st.sidebar.slider("Velocidade", 0.1, 3.0, 1.0, 0.1)
+
     def manual_list(lista):
         t = [int(i) for i in input_list.split(",")]
         save_list(t)
         return t
-    
+
     st.title("Sort Visual")
     st.subheader("Algoritmos de ordenação selecionado : " + selection)
 
@@ -107,13 +115,13 @@ def bubble_sort():
             if is_crescente:
                 if lista[j] > lista[j+1]:
                     lista[j], lista[j+1] = lista[j+1], lista[j]
-                    grafico = st.bar_chart(lista)
+                    grafico = st.bar_chart(list_to_dict(lista))
                     time.sleep(slide_speed)
                     grafico.empty()
             else:
                 if lista[j] < lista[j+1]:
                     lista[j], lista[j+1] = lista[j+1], lista[j]
-                    grafico = st.bar_chart(lista)
+                    grafico = st.bar_chart(list_to_dict(lista))
                     time.sleep(slide_speed)
                     grafico.empty()
     save_list(lista)
@@ -132,7 +140,7 @@ def insertion_sort():
                 lista[j + 1] = lista[j]
                 j -= 1
         lista[j + 1] = key
-        grafico = st.bar_chart(lista)
+        grafico = st.bar_chart(list_to_dict(lista))
         time.sleep(slide_speed)
         grafico.empty()
     save_list(lista)
@@ -149,7 +157,7 @@ def selection_sort():
                 if lista[min_idx] < lista[j]:
                     min_idx = j
         lista[i], lista[min_idx] = lista[min_idx], lista[i]
-        grafico = st.bar_chart(lista)
+        grafico = st.bar_chart(list_to_dict(lista))
         time.sleep(slide_speed)
         grafico.empty()
     save_list(lista)
@@ -176,18 +184,35 @@ def merge_crescente(arr, l, m, r):
     k = l     # Initial index of merged subarray
 
     while i < n1 and j < n2:
+        cp = st.subheader(f"Comparando {L[i]} <= {R[j]}: {L[i] <= R[j]}")
         if L[i] <= R[j]:
             arr[k] = L[i]
+            grafico = st.bar_chart(list_to_dict(arr), height=300)
+            t = st.subheader(f'Lado esquerdo: {L}   lado direito: {R}' )
+            time.sleep(slide_speed)
+            t.empty()
+            grafico.empty()
             i += 1
         else:
             arr[k] = R[j]
+            grafico = st.bar_chart(list_to_dict(arr), height=300)
+            t = st.subheader(f'Lado esquerdo: {L}   lado direito: {R}' )
+            time.sleep(slide_speed)
+            t.empty()
+            grafico.empty()
             j += 1
         k += 1
+        cp.empty()
 
     # Copy the remaining elements of L[], if there
     # are any
     while i < n1:
         arr[k] = L[i]
+        grafico = st.bar_chart(list_to_dict(arr), height=300)
+        t = st.subheader(f'Lado esquerdo: {L}   lado direito: {R}' )
+        time.sleep(slide_speed)
+        t.empty()
+        grafico.empty()
         i += 1
         k += 1
 
@@ -195,6 +220,11 @@ def merge_crescente(arr, l, m, r):
     # are any
     while j < n2:
         arr[k] = R[j]
+        grafico = st.bar_chart(list_to_dict(arr), height=300)
+        t = st.subheader(f'Lado esquerdo: {L}   lado direito: {R}' )
+        time.sleep(slide_speed)
+        t.empty()
+        grafico.empty()
         j += 1
         k += 1
 
@@ -220,18 +250,35 @@ def merge_decrescente(arr, l, m, r):
     k = l     # Initial index of merged subarray
 
     while i < n1 and j < n2:
+        cp = st.subheader(f"Comparando {L[i]} >= {R[j]}: {L[i] >= R[j]}")
         if L[i] >= R[j]:
             arr[k] = L[i]
+            grafico = st.bar_chart(list_to_dict(arr), height=300)
+            t = st.subheader(f'Lado esquerdo: {L}   lado direito: {R}' )
+            time.sleep(slide_speed)
+            t.empty()
+            grafico.empty()
             i += 1
         else:
             arr[k] = R[j]
+            grafico = st.bar_chart(list_to_dict(arr), height=300)
+            t = st.subheader(f'Lado esquerdo: {L}   lado direito: {R}' )
+            time.sleep(slide_speed)
+            t.empty()
+            grafico.empty()
             j += 1
         k += 1
+        cp.empty()
 
     # Copy the remaining elements of L[], if there
     # are any
     while i < n1:
         arr[k] = L[i]
+        grafico = st.bar_chart(list_to_dict(arr), height=300)
+        t = st.subheader(f'Lado esquerdo: {L}   lado direito: {R}' )
+        time.sleep(slide_speed)
+        t.empty()
+        grafico.empty()
         i += 1
         k += 1
 
@@ -239,11 +286,7 @@ def merge_decrescente(arr, l, m, r):
     # are any
     while j < n2:
         arr[k] = R[j]
-        j += 1
-        k += 1
-# l is for left index and r is right index of the
-# sub-array of arr to be sorted
-
+        grafico
 
 def sort_list():
     if selection == "Bubble Sort":
@@ -255,7 +298,30 @@ def sort_list():
     if selection == "Merge Sort":
         arr = load_list()
 
-        def mergeSort(arr, l, r, reverse=False):
+        def mergesort(A):
+
+            low = 0
+            high = len(A) - 1
+
+            temp = A.copy()
+
+            m = 1
+            while m <= high - low:
+
+                for i in range(low, high, 2*m):
+                    frm = i
+                    mid = i + m - 1
+                    to = min(i + 2*m - 1, high)
+                    if is_crescente: pass
+                        # merge_crescente1(A, temp, frm, mid, to, len(temp))
+                    else: pass
+                        # merge_decrescente1(A, temp, frm, mid, to, len(temp))
+
+                m = 2*m
+            save_list(A)
+        mergesort(arr)
+    if selection == "Merge Sort 2":
+        def mergeSort(arr, l, r):
             if l < r:
 
                 # Same as (l+r)//2, but avoids overflow for
@@ -263,21 +329,16 @@ def sort_list():
                 m = l+(r-l)//2
 
                 # Sort first and second halves
-                mergeSort(arr, l, m, reverse)
-
-                mergeSort(arr, m+1, r, reverse)
-                if reverse:
-                    merge_decrescente(arr, l, m, r)
-                else:
+                mergeSort(arr, l, m)
+                mergeSort(arr, m+1, r)
+                if is_crescente:
                     merge_crescente(arr, l, m, r)
-
-                grafico = st.bar_chart(arr)
-                time.sleep(slide_speed)
-                grafico.empty()
-                save_list(arr)
-
+                else:
+                    merge_decrescente(arr, l, m, r)
+        arr = load_list()
         n = len(arr)
-        mergeSort(arr, 0, n-1, reverse=is_crescente)
+        mergeSort(arr, 0, n-1)
+        save_list(arr)
 
 
 button = st.sidebar.button("Ordenar", on_click=sort_list)
